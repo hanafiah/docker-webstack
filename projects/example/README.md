@@ -14,7 +14,7 @@ error_log   /var/www/projects/logs/EXAMPLE-error.log;
 
 make sure to add the following line in your `/etc/hosts` file on Linux/Mac or `C:\Windows\System32\Drivers\etc\hosts` on WIndows
 ```
-127.0.0.1 example.local
+127.0.0.1 EXAMPLE.local
 ```
 
 once you add that, you can access this page by the following url http://example.local
