@@ -1,7 +1,7 @@
 Docker General Stack
 ===============================
 
-This is example shows you how to set nginx.conf for your project's server block
+This example shows you how to set nginx.conf for your project's server block
 
 Change the following line on nginx.conf for your project.
 ```
