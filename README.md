@@ -1,4 +1,4 @@
-Docker General Stack
+Docker Web Stack
 ===============================
 
 This is general stack for the web development environment with preset Nginx, PHP, MariaDB & MongoDB
