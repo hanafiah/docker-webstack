@@ -14,7 +14,7 @@ Projects\YOUR_PROJECT_FOLDER\nginx.conf
 ```
 
 Please see the example project on how to configure your nginx.conf file
-https://github.com/hanafiah/docker-general/tree/master/projects/example
+[projects/example](https://github.com/hanafiah/docker-general/tree/master/projects/example)
 
 To Start Docker
 ===
@@ -28,4 +28,4 @@ To stop
 docker-compose stop
 ```
 
-
+![Alt text](/screen1.png)
