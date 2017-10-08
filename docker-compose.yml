@@ -2,6 +2,7 @@ version: '3'
 services:
     mariadb:
         image: mariadb
+        container_name: "mariadb"
         ports:
             - "3306:3306"
         volumes:
