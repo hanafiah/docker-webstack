@@ -15,3 +15,17 @@ Projects\YOUR_PROJECT_FOLDER\nginx.conf
 
 Please see the example project on how to configure your nginx.conf file
 https://github.com/hanafiah/docker-general/tree/master/projects/example
+
+To Start Docker
+===
+run the following command inside your docker-general directory
+```
+docker-compose up -d
+```
+
+To stop
+```
+docker-compose stop
+```
+
+
