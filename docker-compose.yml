@@ -33,7 +33,7 @@ services:
             - mariadb
             - mongo
     php.fpm:
-        build: php-stack-5.6.30-fpm
+        build: php-stack-7-fpm
         container_name: "php.fpm"
         restart: always
         #working_dir: /web/stats-digital
