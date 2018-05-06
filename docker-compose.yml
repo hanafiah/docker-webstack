@@ -38,7 +38,7 @@ services:
         restart: always
         #working_dir: /web/stats-digital
         volumes:
-#            - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+            - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
             - "./projects/:/var/www/projects"
         links:
             - mariadb
@@ -50,8 +50,8 @@ services:
         image: mongo
         container_name: "mongo"
         restart: always
-        volumes:
-            - "./mongo:/data/db"
+        # volumes:
+        #     - "./mongo:/data/db"
         ports:
             - "27017:27017"
         command: --storageEngine wiredTiger        
