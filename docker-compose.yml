@@ -33,7 +33,7 @@ services:
             - mariadb
             - mongo
     php.fpm:
-        build: php-stack-7-fpm
+        build: php-stack-5.6.30-fpm
         container_name: "php.fpm"
         restart: always
         #working_dir: /web/stats-digital
@@ -55,3 +55,17 @@ services:
         ports:
             - "27017:27017"
         command: --storageEngine wiredTiger        
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+        container_name: "elasticsearch"
+        ports:
+            - 9200:9200
+        volumes:
+            - "./projects/:/var/www/projects"    
+    # tika:
+    #     image: logicalspark/docker-tikaserver
+    #     container_name: "tika"
+    #     ports:
+    #         - 9998:9998
+    #     volumes:
+    #         - "./projects/:/var/www/projects"
