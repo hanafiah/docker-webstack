@@ -61,11 +61,12 @@ services:
         ports:
             - 9200:9200
         volumes:
-            - "./projects/:/var/www/projects"    
-    # tika:
-    #     image: logicalspark/docker-tikaserver
-    #     container_name: "tika"
-    #     ports:
-    #         - 9998:9998
-    #     volumes:
-    #         - "./projects/:/var/www/projects"
+            - "./projects/:/var/www/projects"   
+            - "./etc/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml" 
+    tika:
+        image: logicalspark/docker-tikaserver
+        container_name: "tika"
+        ports:
+            - 9998:9998
+        volumes:
+            - "./projects/:/var/www/projects"
