@@ -54,3 +54,8 @@ docker-compose stop
 ```
 
 ![Alt text](/screen1.png)
+
+
+Using php composer
+===
+https://github.com/hanafiah/docker-webstack/wiki/How-to-use-composer
