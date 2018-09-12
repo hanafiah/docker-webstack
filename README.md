@@ -16,6 +16,31 @@ Projects\YOUR_PROJECT_FOLDER\nginx.conf
 Please see the example project on how to configure your nginx.conf file
 [projects/example](https://github.com/hanafiah/docker-general/tree/master/projects/example)
 
+
+Virtual host
+===
+make sure to set virtual host on hosts file
+## Mac/Linux
+```
+sudo vim /etc/hosts
+```
+## windows
+1. open notepad as administratio
+2. open hosts file located at
+```
+C:\Windows\System32\drivers\etc\hosts
+```
+
+add the following
+```
+127.0.0.1 www.example.local
+```
+
+once saved, you should be able to access site from
+
+http://www.example.local
+
+
 To Start Docker
 ===
 run the following command inside your docker-general directory
