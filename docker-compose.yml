@@ -33,8 +33,22 @@ services:
             - mariadb
             - mongo
     php.fpm:
-        build: php-stack-5.6.30-fpm
+        build: php-stack-7-fpm
         container_name: "php.fpm"
+        restart: always
+        #working_dir: /web/stats-digital
+        volumes:
+            - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+            - "./projects/:/var/www/projects"
+        links:
+            - mariadb
+            - mongo
+        depends_on:
+            - mariadb
+            - mongo
+    php5.fpm:
+        build: php-stack-5.6.30-fpm
+        container_name: "php5.fpm"
         restart: always
         #working_dir: /web/stats-digital
         volumes:
@@ -70,3 +84,5 @@ services:
             - 9998:9998
         volumes:
             - "./projects/:/var/www/projects"
+
+
