@@ -61,11 +61,11 @@ services:
             - mariadb
             - mongo
     mongo:
-        image: mongo
+        image: percona/percona-server-mongodb
         container_name: "mongo"
         restart: always
-        # volumes:
-        #     - "./mongo:/data/db"
+        volumes:
+            - "./mongo:/data/db"
         ports:
             - "27017:27017"
         command: --storageEngine wiredTiger        
