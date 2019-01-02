@@ -16,6 +16,13 @@ Projects\YOUR_PROJECT_FOLDER\nginx.conf
 Please see the example project on how to configure your nginx.conf file
 [projects/example](https://github.com/hanafiah/docker-general/tree/master/projects/example)
 
+## SubModule project
+if you're using git for your projects. you can add that under projects folder using submodule command
+
+```
+cd projects
+git submodule add -f git@github.com:hanafiah/example.git 
+```
 
 Virtual host
 ===
