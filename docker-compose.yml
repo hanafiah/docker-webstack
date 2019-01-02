@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
     mariadb:
         image: mariadb
@@ -6,83 +6,50 @@ services:
         ports:
             - "3306:3306"
         volumes:
-            - "./mysql:/var/lib/mysql:rw"
+            - "./db/mariadb:/var/lib/mysql:rw"
             - "./etc/mysql/:/etc/mysql/"
         environment:
             # ALLOW_EMPTY_PASSWORD is recommended only for development.
             - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
             - "MYSQL_USER=root"
             - "SET GLOBAL sql_mode =''"
+        networks:
+            - docker_webstack
     web.nginx:
         image: nginx:latest
         container_name: "web.nginx"
         ports:
             - "80:80"
-            - "3000:443"
+            - "443:443"
         restart: always
         volumes:
             - "./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf"
             - "./etc/ssl:/etc/ssl"
             - "./projects/:/var/www/projects"
-        links:
-            - php.fpm 
-            - mariadb
-            - mongo
         depends_on:
-            - php.fpm
+            - php7.fpm
+            - php5.fpm
             - mariadb
-            - mongo
-    php.fpm:
+        networks:
+            - docker_webstack
+    php7.fpm:
         build: php-stack-7-fpm
-        container_name: "php.fpm"
+        container_name: "php7.fpm"
         restart: always
-        #working_dir: /web/stats-digital
         volumes:
             - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
             - "./projects/:/var/www/projects"
-        links:
-            - mariadb
-            - mongo
-        depends_on:
-            - mariadb
-            - mongo
+        networks:
+            - docker_webstack
     php5.fpm:
         build: php-stack-5.6.30-fpm
         container_name: "php5.fpm"
         restart: always
-        #working_dir: /web/stats-digital
         volumes:
             - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
             - "./projects/:/var/www/projects"
-        links:
-            - mariadb
-            - mongo
-        depends_on:
-            - mariadb
-            - mongo
-    mongo:
-        image: percona/percona-server-mongodb
-        container_name: "mongo"
-        restart: always
-        volumes:
-            - "./mongo:/data/db"
-        ports:
-            - "27017:27017"
-        command: --storageEngine wiredTiger        
-    elasticsearch:
-        build: elasticsearch
-        container_name: "elasticsearch"
-        ports:
-            - 9200:9200
-        volumes:
-            - "./projects/:/var/www/projects"   
-            - "./etc/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml" 
-    tika:
-        image: logicalspark/docker-tikaserver
-        container_name: "tika"
-        ports:
-            - 9998:9998
-        volumes:
-            - "./projects/:/var/www/projects"
-
-
+        networks:
+            - docker_webstack
+networks:
+    docker_webstack:
+        driver: bridge
