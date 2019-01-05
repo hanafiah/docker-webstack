@@ -1,6 +1,3 @@
 [submodule "projects/example1"]
-	path = projects/example1
-	url = https://github.com/hanafiah/example.git
-[submodule "projects/example2"]
-	path = projects/example2
+	path = projects/example
 	url = https://github.com/hanafiah/example.git
