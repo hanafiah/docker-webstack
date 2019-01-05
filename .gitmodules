@@ -1,6 +1,6 @@
 [submodule "projects/example1"]
 	path = projects/example1
-	url = git@github.com:hanafiah/example.git
+	url = https://github.com/hanafiah/example.git
 [submodule "projects/example2"]
 	path = projects/example2
-	url = git@github.com:hanafiah/example.git
+	url = https://github.com/hanafiah/example.git
