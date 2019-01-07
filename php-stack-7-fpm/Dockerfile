@@ -21,7 +21,7 @@ RUN apt-get update && apt-get upgrade -y \
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 # Install MongoDB Client
-RUN pecl install mongodb && docker-php-ext-enable mongodb
+# RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 # Install Redis Client
 # RUN pecl install redis && docker-php-ext-enable redis

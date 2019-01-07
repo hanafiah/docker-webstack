@@ -6,7 +6,7 @@ services:
         ports:
             - "3306:3306"
         volumes:
-            - "./db/mysql:/var/lib/mysql:rw"
+            - "./db/mariadb:/var/lib/mysql:rw"
             - "./etc/mysql/:/etc/mysql/"
         environment:
             # ALLOW_EMPTY_PASSWORD is recommended only for development.
@@ -47,36 +47,6 @@ services:
         restart: always
         volumes:
             - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
-            - "./projects/:/var/www/projects"
-        networks:
-            - docker_webstack
-    mongo:
-        image: percona/percona-server-mongodb
-        container_name: "mongo"
-        restart: always
-        ports:
-            - "27017:27017"
-        command: --storageEngine wiredTiger 
-        networks:
-            - docker_webstack       
-    elasticsearch:
-        build: elasticsearch
-        container_name: "elasticsearch"
-        ports:
-            - 9200:9200
-        restart: always    
-        volumes:
-            - "./projects/:/var/www/projects"   
-            - "./etc/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml" 
-        networks:
-            - docker_webstack
-    tika:
-        image: logicalspark/docker-tikaserver
-        container_name: "tika"
-        ports:
-            - 9998:9998
-        restart: always    
-        volumes:
             - "./projects/:/var/www/projects"
         networks:
             - docker_webstack
