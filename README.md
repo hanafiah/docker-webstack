@@ -47,6 +47,12 @@ once saved, you should be able to access site from
 
 http://www.example.local
 
+Load Example
+===
+run the following command
+```
+git submodule update --init 
+```
 
 To Start Docker
 ===
@@ -61,6 +67,7 @@ docker-compose stop
 ```
 
 ![Alt text](/screen1.png)
+
 
 
 Using php composer
