@@ -15,9 +15,9 @@ services:
             - "SET GLOBAL sql_mode =''"
         networks:
             - docker_webstack
-    web.nginx:
+    nginx:
         image: nginx:latest
-        container_name: "web.nginx"
+        container_name: "nginx"
         ports:
             - "80:80"
             - "443:443"
