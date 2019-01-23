@@ -1,6 +1,5 @@
 #empty dir
 *
 !.gitignore
-!example1/*.*
-!example2/*.*
+!example/*.*
 !logs/.gitignore
