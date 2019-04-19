@@ -4,14 +4,15 @@ services:
         image: mariadb
         container_name: "mariadb"
         ports:
-            - "3306:3306"
+            # only allow port 3306 access from localhost only
+            - "127.0.0.1:3306:3306"
         volumes:
             - "./db/mariadb:/var/lib/mysql:rw"
             - "./etc/mysql/:/etc/mysql/"
         environment:
             # ALLOW_EMPTY_PASSWORD is recommended only for development.
             # - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
-            # - "MYSQL_USER=root"
+            - "MYSQL_ROOT_USER=root"
             - "SET GLOBAL sql_mode =''"
         networks:
             - docker_webstack
