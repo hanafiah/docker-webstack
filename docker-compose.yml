@@ -10,8 +10,8 @@ services:
             - "./etc/mysql/:/etc/mysql/"
         environment:
             # ALLOW_EMPTY_PASSWORD is recommended only for development.
-            - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
-            - "MYSQL_USER=root"
+            # - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
+            # - "MYSQL_USER=root"
             - "SET GLOBAL sql_mode =''"
         networks:
             - docker_webstack
