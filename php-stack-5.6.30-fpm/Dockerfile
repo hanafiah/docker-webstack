@@ -1,5 +1,5 @@
 FROM php:5.6.30-fpm
-RUN apt-get update && apt-get upgrade -y \
+RUN apt-get update && apt-get install -y \
     libssl-dev \
     libssl-doc \
     libsasl2-dev \
