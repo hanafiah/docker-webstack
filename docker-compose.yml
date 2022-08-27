@@ -28,23 +28,23 @@ services:
             - "./etc/ssl:/etc/ssl"
             - "./projects/:/var/www/projects"
         depends_on:
-            - php7.fpm
-            - php5.fpm
+            - php7
+            - php5
             - mariadb
         networks:
             - docker_webstack
-    php7.fpm:
+    php7:
         build: php-stack-7-fpm
-        container_name: "php7.fpm"
+        container_name: "php7"
         restart: always
         volumes:
             - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
             - "./projects/:/var/www/projects"
         networks:
             - docker_webstack
-    php5.fpm:
+    php5:
         build: php-stack-5.6.30-fpm
-        container_name: "php5.fpm"
+        container_name: "php5"
         restart: always
         volumes:
             - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
