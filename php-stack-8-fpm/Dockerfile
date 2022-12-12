@@ -36,7 +36,7 @@ RUN apt-get update  \
     && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc 
 
 # Install pdo sqlsrv
-RUN pecl config-set php_ini /etc/php/7.4/fpm/php.ini \
+RUN pecl config-set php_ini /usr/local/etc/php/conf.d/php.ini \
     && pecl install sqlsrv \
     && pecl install pdo_sqlsrv \
     && echo 'extension=sqlsrv.so' >> /usr/local/etc/php/conf.d/sqlsrv.ini \
