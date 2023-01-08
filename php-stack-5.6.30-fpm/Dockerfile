@@ -1,4 +1,8 @@
 FROM php:5.6.30-fpm
+
+RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
+RUN sed -i 's;http://archive.debian.org/debian/;http://deb.debian.org/debian/;' /etc/apt/sources.list
+
 RUN apt-get update && apt-get install --yes --force-yes \
     libssl-dev \
     libssl-doc \
