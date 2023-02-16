@@ -31,7 +31,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list
 
 RUN apt-get update  \
-    && ACCEPT_EULA=Y apt-get install --yes --no-install-recommends msodbcsql17 unixodbc-dev \
+    && ACCEPT_EULA=Y apt-get install --yes --no-install-recommends msodbcsql17 unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7 \
     && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile \
     && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc 
 
