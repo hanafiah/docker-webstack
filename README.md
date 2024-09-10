@@ -73,3 +73,14 @@ docker-compose stop
 Using php composer
 ===
 https://github.com/hanafiah/docker-webstack/wiki/How-to-use-composer
+
+
+Note for Apple M2 processor
+===
+some driver might check for the processor for example MS SQL , currently M2 is not supported (err: Unsupported processor architecture.). To mitigate this issue, you can run docker service with emulate platform. for example
+```
+  php8.2.fpm.mssql:
+        build: php-stack-8.2-fpm-mssql
+        container_name: "php8.2.fpm.mssql"
+        platform: linux/amd64
+```
