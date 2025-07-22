@@ -1,2 +1,42 @@
-.idea
+# Environment files
+.env
+.env.local
+.env.production
 
+# Database data
+db/mariadb/*
+db/redis/*
+
+# Logs
+logs/**/*
+
+# SSL certificates (keep private)
+etc/ssl/*
+
+# Project files (user-specific)
+projects/*
+!projects/phpinfo/
+
+# Docker volumes
+docker-volumes/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.backup
+*.bak
+*.old
+*.orig
+*.save
+
+# Temporary verification files
+VERIFICATION.md

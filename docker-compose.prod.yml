@@ -1,0 +1,99 @@
+# Docker Compose Production Configuration
+# Use this file for production deployments
+# docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+version: '3.8'
+
+services:
+  # Production webserver configuration
+  webserver:
+    restart: unless-stopped
+    environment:
+      # Strict security settings
+      - NGINX_WORKER_PROCESSES=auto
+      - NGINX_WORKER_CONNECTIONS=4096
+      - NGINX_RATE_LIMIT_ENABLED=1
+    ports:
+      # Only bind to localhost in production
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Production database configuration
+  database:
+    restart: unless-stopped
+    environment:
+      # Production database settings
+      - MYSQL_INNODB_BUFFER_POOL_SIZE=2G
+      - MYSQL_MAX_CONNECTIONS=500
+      - MYSQL_QUERY_CACHE_SIZE=256M
+    ports:
+      # Database only accessible from localhost
+      - "127.0.0.1:3306:3306"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Production cache configuration
+  cache:
+    restart: unless-stopped
+    ports:
+      # Redis only accessible from localhost
+      - "127.0.0.1:6379:6379"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Production PHP configurations
+  php56: &php-prod
+    restart: unless-stopped
+    environment:
+      # Production PHP settings
+      - PHP_DISPLAY_ERRORS=0
+      - PHP_LOG_ERRORS=1
+      - PHP_OPCACHE_VALIDATE_TIMESTAMPS=0
+      - PHP_EXPOSE_PHP=0
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  php70:
+    <<: *php-prod
+  php71:
+    <<: *php-prod
+  php72:
+    <<: *php-prod
+  php73:
+    <<: *php-prod
+  php74:
+    <<: *php-prod
+  php80:
+    <<: *php-prod
+  php81:
+    <<: *php-prod
+  php82:
+    <<: *php-prod
+  php83:
+    <<: *php-prod
+  php84:
+    <<: *php-prod
+
+# Production networks with custom driver options
+networks:
+  webstack:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
