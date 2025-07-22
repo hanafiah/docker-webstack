@@ -23,6 +23,7 @@ A comprehensive Docker-based development environment featuring Nginx, MariaDB, R
 ## ⚡ Quick Start
 
 ### 1. Clone and Setup
+
 ```bash
 git clone https://github.com/hanafiah/docker-webstack.git
 cd docker-webstack
@@ -32,6 +33,7 @@ cd docker-webstack
 ```
 
 ### 2. Manual Setup
+
 ```bash
 # Copy environment file
 cp .env.example .env
@@ -44,6 +46,7 @@ docker compose up -d
 ```
 
 ### 3. Setup Virtual Hosts
+
 ```bash
 # Add development domains to hosts file (Linux/Mac)
 echo "127.0.0.1 phpinfo.test" | sudo tee -a /etc/hosts
@@ -53,6 +56,7 @@ echo "127.0.0.1 myapp.test" | sudo tee -a /etc/hosts
 ```
 
 ### 4. Verify Installation
+
 ```bash
 # Check service status
 docker compose ps
@@ -67,13 +71,15 @@ curl http://phpinfo.test
 ## 🏗️ Architecture
 
 ### Services
-- **webserver**: Nginx (Alpine) with security optimizations
+
+- **webserver**: Nginx with security optimizations
 - **database**: MariaDB master with performance tuning
 - **database-slave**: MariaDB read-only replica (port 3307)
 - **cache**: Redis for session/cache storage
-- **php56-php84**: Multiple PHP-FPM containers
+- **php56-php84**: Multiple PHP-FPM
 
 ### Project Structure
+
 ```
 docker-webstack/
 ├── projects/              # Your web projects
@@ -93,6 +99,7 @@ docker-webstack/
 ## 🔧 Usage
 
 ### Working with Projects
+
 ```bash
 # Create new project
 mkdir projects/myapp
@@ -124,6 +131,7 @@ docker compose restart webserver
 ```
 
 ### PHP Version Management
+
 ```bash
 # Access specific PHP version
 docker compose exec php84 bash
@@ -142,6 +150,7 @@ docker compose exec php84 php -m
 ### Database Operations
 
 #### Master Database (Read/Write)
+
 ```bash
 # Access MariaDB Master
 docker compose exec database mariadb -u root -p
@@ -156,6 +165,7 @@ docker compose exec database mysqldump -u root -p${DB_ROOT_PASSWORD} --all-datab
 ```
 
 #### Slave Database (Read-Only)
+
 ```bash
 # Access MariaDB Slave (Read-Only)
 docker compose exec database-slave mariadb -u root -p
@@ -169,6 +179,7 @@ docker compose exec database-slave mysql -u root -p${DB_ROOT_PASSWORD} -e "SHOW 
 ```
 
 #### Database Replication Setup
+
 ```bash
 # Environment variables in .env
 DB_REPLICATION_USER=replicator
@@ -204,12 +215,14 @@ DB_REPLICATION_PASSWORD=repl123
 ## 🌍 Environment Configurations
 
 ### Development (Default)
+
 ```bash
 docker compose up -d
-# Includes: Adminer, Redis Commander, debug mode
+# Includes:  Redis Commander, debug mode
 ```
 
 ### Production
+
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 # Includes: Security hardening, performance optimization
@@ -218,6 +231,7 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ## 🔧 Configuration
 
 ### Environment Variables (.env)
+
 ```bash
 # Database Master/Slave
 DB_ROOT_PASSWORD=secure_password
@@ -250,6 +264,7 @@ APP_ENV=production
 For development, we use `.test` domains for better local development experience.
 
 #### Linux/Mac
+
 ```bash
 # Edit hosts file
 sudo vim /etc/hosts
@@ -264,18 +279,22 @@ sudo vim /etc/hosts
 ```
 
 #### Windows
+
 1. **Run Notepad as Administrator**
 2. **Open hosts file**: `C:\Windows\System32\drivers\etc\hosts`
 3. **Add these entries**:
+
 ```
 127.0.0.1 phpinfo.test
 127.0.0.1 myapp.test
 127.0.0.1 api.test
 127.0.0.1 laravel.test
 ```
+
 4. **Save the file**
 
 #### Quick Setup Script
+
 ```bash
 # Linux/Mac - Add common development domains
 echo "127.0.0.1 phpinfo.test" | sudo tee -a /etc/hosts
@@ -304,16 +323,18 @@ docker compose ps
 ## 🔍 Development Tools
 
 ### Access URLs
+
 - **Web Server**: http://localhost or any configured `.test` domain
 - **PHP Info**: http://phpinfo.test (after hosts setup)
 - **Projects**: http://myapp.test, http://laravel.test
 - **Database Master**: 127.0.0.1:3306 (Read/Write)
 - **Database Slave**: 127.0.0.1:3307 (Read-Only)
-- **Adminer** (dev): http://localhost:8081
 - **Redis Commander** (dev): http://localhost:8082
 
 ### Debugging with Xdebug
+
 Xdebug is pre-configured for all PHP versions:
+
 - **PHP 5.6**: Xdebug 2.5.5 (port 9000)
 - **PHP 7.4**: Xdebug 2.9.8 (port 9003)
 - **PHP 8.4**: Xdebug 3.x (port 9003)
@@ -321,6 +342,7 @@ Xdebug is pre-configured for all PHP versions:
 ## ⚠️ Troubleshooting
 
 ### Common Issues
+
 ```bash
 # Permission errors
 sudo chown -R $USER:$USER projects/ logs/
@@ -337,7 +359,9 @@ docker compose restart [service_name]
 ```
 
 ### Apple Silicon (M1/M2) Support
+
 All images are multi-architecture compatible. For SQL Server support on ARM:
+
 ```yaml
 # Add to docker-compose.override.yml
 services:
