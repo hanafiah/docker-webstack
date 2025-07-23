@@ -11,7 +11,6 @@ A comprehensive Docker-based development environment featuring Nginx, MariaDB, R
 - **Laravel Ready**: All required extensions and tools pre-installed
 - **Production Optimized**: Security headers, rate limiting, OPcache, health checks
 - **Development Tools**: Xdebug, Composer, Node.js, Laravel installer
-- **Time Sync**: SIRIM Malaysia NTP integration
 - **Security Hardened**: Read-only configs, proper permissions, monitoring
 
 ## 📋 Requirements
@@ -208,8 +207,6 @@ DB_REPLICATION_PASSWORD=repl123
 # Backup databases and configs
 ./scripts/backup.sh
 
-# Sync time with SIRIM Malaysia NTP
-./scripts/ntp-sync.sh
 ```
 
 ## 🌍 Environment Configurations

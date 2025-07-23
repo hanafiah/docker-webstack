@@ -15,9 +15,9 @@ if [ -f .env ]; then
 fi
 
 # Default NTP servers (SIRIM Malaysia)
-NTP_SERVER=${NTP_SERVER:-ntp.sirim.my}
-NTP_SERVER_BACKUP=${NTP_SERVER_BACKUP:-ntp1.sirim.my}
-NTP_SERVER_FALLBACK=${NTP_SERVER_FALLBACK:-pool.ntp.org}
+NTP_SERVER=${NTP_SERVER:-mst.sirim.my}
+NTP_SERVER_BACKUP=${NTP_SERVER_BACKUP:-mst.sirim.my}
+NTP_SERVER_FALLBACK=${NTP_SERVER_FALLBACK:-0.my.pool.ntp.org}
 
 log() {
     echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')] $1${NC}"
