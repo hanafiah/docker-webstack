@@ -24,20 +24,18 @@ services:
       - "6379:6379"
 
   # Development overrides for PHP services (example for php84)
-  php84:
-    environment:
-      # Enable error display in development
-      - PHP_DISPLAY_ERRORS=1
-      - PHP_DISPLAY_STARTUP_ERRORS=1
-      - PHP_ERROR_REPORTING=E_ALL
-      # Enable OPcache validation in development
-      - PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
-      - PHP_OPCACHE_REVALIDATE_FREQ=2
-    volumes:
-      # Add development tools
-      - "./dev-tools:/var/www/dev-tools:ro"
-
-
+  # php84:
+  #   environment:
+  #     # Enable error display in development
+  #     - PHP_DISPLAY_ERRORS=1
+  #     - PHP_DISPLAY_STARTUP_ERRORS=1
+  #     - PHP_ERROR_REPORTING=E_ALL
+  #     # Enable OPcache validation in development
+  #     - PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
+  #     - PHP_OPCACHE_REVALIDATE_FREQ=2
+  #   volumes:
+  #     # Add development tools
+  #     - "./dev-tools:/var/www/dev-tools:ro"
 
   # Add Redis commander for Redis management
   redis-commander:

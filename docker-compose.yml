@@ -6,7 +6,7 @@ x-php-common: &php-common
     # Web projects
     - "./projects:/var/www/projects"
     # Logs
-    - "./logs/php:/var/log/php"
+    - "./logs/php:/usr/local/var/log"
     # Sessions and temp files
     - php_sessions:/tmp/sessions
     - php_uploads:/tmp/uploads
@@ -221,7 +221,7 @@ services:
 
   # Web Server Service
   webserver:
-    build: ./nginx-stack
+    image: nginx:latest
     container_name: "webstack-nginx"
     ports:
       - "${HTTP_PORT:-80}:80"
@@ -318,20 +318,20 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/5.6:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/5.6/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php56:/var/log/php"
+      - "./logs/php56:/usr/local/var/log"
+
       # Sessions and temp files
       - php56_sessions:/tmp/sessions
       - php56_uploads:/tmp/uploads
     environment:
       - PHP_VERSION=5.6
 
-  # PHP 7.0 Service
+  # # PHP 7.0 Service
   php70:
     <<: *php-common
     build:
@@ -341,13 +341,12 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/7.0:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/7.0/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php70:/var/log/php"
+      - "./logs/php70:/usr/local/var/log"
       # Sessions and temp files
       - php70_sessions:/tmp/sessions
       - php70_uploads:/tmp/uploads
@@ -364,13 +363,12 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/7.1:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/7.1/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php71:/var/log/php"
+      - "./logs/php71:/usr/local/var/log"
       # Sessions and temp files
       - php71_sessions:/tmp/sessions
       - php71_uploads:/tmp/uploads
@@ -387,13 +385,13 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/7.2:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/7.2/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php72:/var/log/php"
+      - "./logs/php72:/usr/local/var/log"
+
       # Sessions and temp files
       - php72_sessions:/tmp/sessions
       - php72_uploads:/tmp/uploads
@@ -410,13 +408,12 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/7.3:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/7.3/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php73:/var/log/php"
+      - "./logs/php73:/usr/local/var/log"
       # Sessions and temp files
       - php73_sessions:/tmp/sessions
       - php73_uploads:/tmp/uploads
@@ -433,13 +430,12 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/7.4:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/7.4/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php74:/var/log/php"
+      - "./logs/php74:/usr/local/var/log"
       # Sessions and temp files
       - php74_sessions:/tmp/sessions
       - php74_uploads:/tmp/uploads
@@ -456,13 +452,12 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/8.0:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/8.0/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php80:/var/log/php"
+      - "./logs/php80:/usr/local/var/log"
       # Sessions and temp files
       - php80_sessions:/tmp/sessions
       - php80_uploads:/tmp/uploads
@@ -479,20 +474,19 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/8.1:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/8.1/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php81:/var/log/php"
+      - "./logs/php81:/usr/local/var/log"
       # Sessions and temp files
       - php81_sessions:/tmp/sessions
       - php81_uploads:/tmp/uploads
     environment:
       - PHP_VERSION=8.1
 
-  # PHP 8.2 Service
+  # # PHP 8.2 Service
   php82:
     <<: *php-common
     build:
@@ -502,13 +496,12 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/8.2:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/8.2/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php82:/var/log/php"
+      - "./logs/php82:/usr/local/var/log"
       # Sessions and temp files
       - php82_sessions:/tmp/sessions
       - php82_uploads:/tmp/uploads
@@ -525,13 +518,12 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/8.3:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/8.3/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php83:/var/log/php"
+      - "./logs/php83:/usr/local/var/log"
       # Sessions and temp files
       - php83_sessions:/tmp/sessions
       - php83_uploads:/tmp/uploads
@@ -548,13 +540,12 @@ services:
     volumes:
       # PHP configuration files
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro"
       - "./etc/php/8.4:/usr/local/etc/php/conf.d/99-version:ro"
       - "./etc/php/8.4/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
       # Web projects
       - "./projects:/var/www/projects"
       # Logs
-      - "./logs/php84:/var/log/php"
+      - "./logs/php84:/usr/local/var/log"
       # Sessions and temp files
       - php84_sessions:/tmp/sessions
       - php84_uploads:/tmp/uploads

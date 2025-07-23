@@ -25,15 +25,15 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
-        pdo_mysql \
-        mbstring \
-        exif \
-        pcntl \
-        bcmath \
-        gd \
-        zip \
-        opcache \
-        mysqli
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip \
+    opcache \
+    mysqli
 
 # Install Redis extension
 RUN pecl install redis-5.3.7 \
@@ -53,17 +53,14 @@ WORKDIR /var/www/projects
 RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 
 # Create directories with proper permissions for PHP-FPM
-RUN mkdir -p /var/log/php /tmp/sessions /tmp/uploads /var/run/php-fpm \
-    && chown -R www-data:www-data /var/log/php /tmp/sessions /tmp/uploads /var/run/php-fpm \
-    && chmod 755 /var/log/php /var/run/php-fpm \
+RUN mkdir -p /var/log/php /tmp/sessions /tmp/uploads /var/run/php-fpm /usr/local/var/log \
+    && chown -R www-data:www-data /var/log/php /tmp/sessions /tmp/uploads /var/run/php-fpm /usr/local/var/log \
+    && chmod 755 /var/log/php /var/run/php-fpm /usr/local/var/log \
     && chmod 1777 /tmp/sessions /tmp/uploads
-
-# Copy ownership to www-data user
-COPY --chown=www-data:www-data . /var/www/projects
 
 # Change current user to www-data
 USER www-data
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
-CMD ["php-fpm"]
+CMD ["php-fpm", "--nodaemonize"]
