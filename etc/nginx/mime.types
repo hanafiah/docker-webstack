@@ -79,4 +79,9 @@ types {
 
     text/plain                            txt;
     text/x-component                      htc;
+
+    text/javascript                       js;
+    application/javascript                js;
+    text/javascript                       mjs;
+    application/javascript                mjs;
 }
