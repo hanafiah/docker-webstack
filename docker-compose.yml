@@ -13,32 +13,13 @@ x-php-common: &php-common
   networks:
     - webstack
   environment:
+    # Docker-specific PHP settings
     - PHP_INI_SCAN_DIR=/usr/local/etc/php/conf.d:/usr/local/etc/php/custom.d
     - PHP_FPM_LISTEN=9000
-    # Memory & Performance
-    - PHP_MEMORY_LIMIT=512M
-    - PHP_MAX_EXECUTION_TIME=300
-    - PHP_POST_MAX_SIZE=100M
-    - PHP_UPLOAD_MAX_FILESIZE=100M
-    - PHP_MAX_INPUT_VARS=3000
-    - PHP_MAX_INPUT_TIME=300
-    # OPcache optimizations
-    - PHP_OPCACHE_ENABLE=1
-    - PHP_OPCACHE_MEMORY_CONSUMPTION=256
-    - PHP_OPCACHE_MAX_ACCELERATED_FILES=20000
-    - PHP_OPCACHE_VALIDATE_TIMESTAMPS=0
-    - PHP_OPCACHE_REVALIDATE_FREQ=0
-    - PHP_OPCACHE_SAVE_COMMENTS=0
-    # Security & Error handling
-    - PHP_EXPOSE_PHP=0
-    - PHP_DISPLAY_ERRORS=0
-    - PHP_LOG_ERRORS=1
-    # Session optimizations
-    - PHP_SESSION_SAVE_HANDLER=files
-    - PHP_SESSION_SAVE_PATH=/tmp/sessions
-    - PHP_SESSION_GC_MAXLIFETIME=7200
     # Timezone configuration
     - TZ=${TIMEZONE:-Asia/Kuala_Lumpur}
+    # All PHP performance settings are now handled by /usr/local/etc/php/conf.d/00-general.ini
+    # This eliminates conflicts and provides single source of truth
   healthcheck:
     test: ["CMD", "php", "-v"]
     interval: 30s
@@ -48,8 +29,8 @@ x-php-common: &php-common
   deploy:
     resources:
       limits:
-        memory: 1G
-        cpus: "1.0"
+        memory: 4068M
+        cpus: "4.0"
       reservations:
         memory: 256M
         cpus: "0.25"
@@ -67,30 +48,20 @@ services:
       - "./logs/mariadb:/var/log/mysql"
       - mariadb_temp:/tmp
     environment:
+      # Database initialization (Docker-specific)
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-12345}
       MYSQL_DATABASE: ${DB_NAME:-webstack}
       MYSQL_USER: ${DB_USER:-webstack}
       MYSQL_PASSWORD: ${DB_PASSWORD:-webstack}
       MARIADB_AUTO_UPGRADE: 1
-      # Replication configuration
+      # Replication configuration (Docker-specific)
       MYSQL_REPLICATION_MODE: master
       MYSQL_REPLICATION_USER: ${DB_REPLICATION_USER:-replicator}
       MYSQL_REPLICATION_PASSWORD: ${DB_REPLICATION_PASSWORD:-repl123}
       # Timezone configuration
       TZ: ${TIMEZONE:-Asia/Kuala_Lumpur}
-      # Performance optimizations
-      MYSQL_INNODB_BUFFER_POOL_SIZE: ${DB_INNODB_BUFFER_POOL_SIZE:-512M}
-      MYSQL_INNODB_LOG_FILE_SIZE: ${DB_INNODB_LOG_FILE_SIZE:-128M}
-      MYSQL_INNODB_FLUSH_LOG_AT_TRX_COMMIT: ${DB_INNODB_FLUSH_LOG_AT_TRX_COMMIT:-2}
-      MYSQL_MAX_CONNECTIONS: ${DB_MAX_CONNECTIONS:-200}
-      MYSQL_QUERY_CACHE_SIZE: ${DB_QUERY_CACHE_SIZE:-128M}
-      MYSQL_QUERY_CACHE_TYPE: ${DB_QUERY_CACHE_TYPE:-1}
-      MYSQL_THREAD_CACHE_SIZE: ${DB_THREAD_CACHE_SIZE:-16}
-      MYSQL_TABLE_OPEN_CACHE: ${DB_TABLE_OPEN_CACHE:-2000}
-      MYSQL_SORT_BUFFER_SIZE: ${DB_SORT_BUFFER_SIZE:-2M}
-      MYSQL_READ_BUFFER_SIZE: ${DB_READ_BUFFER_SIZE:-128K}
-      MYSQL_READ_RND_BUFFER_SIZE: ${DB_READ_RND_BUFFER_SIZE:-256K}
-      MYSQL_KEY_BUFFER_SIZE: ${DB_KEY_BUFFER_SIZE:-128M}
+      # Performance settings are now handled by /etc/mysql/conf.d/my.cnf
+      # This eliminates conflicts and provides single source of truth
     networks:
       - webstack
     healthcheck:
@@ -116,25 +87,8 @@ services:
         reservations:
           memory: 512M
           cpus: "0.5"
-    command: >
-      --server-id=1
-      --log-bin=mysql-bin
-      --binlog-format=ROW
-      --innodb-buffer-pool-size=${DB_INNODB_BUFFER_POOL_SIZE:-512M}
-      --innodb-log-file-size=${DB_INNODB_LOG_FILE_SIZE:-128M}
-      --innodb-flush-log-at-trx-commit=${DB_INNODB_FLUSH_LOG_AT_TRX_COMMIT:-2}
-      --max-connections=${DB_MAX_CONNECTIONS:-200}
-      --query-cache-size=${DB_QUERY_CACHE_SIZE:-128M}
-      --query-cache-type=${DB_QUERY_CACHE_TYPE:-1}
-      --thread-cache-size=${DB_THREAD_CACHE_SIZE:-16}
-      --table-open-cache=${DB_TABLE_OPEN_CACHE:-2000}
-      --sort-buffer-size=${DB_SORT_BUFFER_SIZE:-2M}
-      --read-buffer-size=${DB_READ_BUFFER_SIZE:-128K}
-      --read-rnd-buffer-size=${DB_READ_RND_BUFFER_SIZE:-256K}
-      --key-buffer-size=${DB_KEY_BUFFER_SIZE:-128M}
-      --slow-query-log=1
-      --slow-query-log-file=/var/log/mysql/slow.log
-      --long-query-time=2
+    # Configuration is now handled entirely by /etc/mysql/conf.d/my.cnf
+    # This provides better consistency and easier management
 
   # Database Service - Slave (Read Replica)
   database-slave:
@@ -148,6 +102,7 @@ services:
       - "./logs/mariadb-slave:/var/log/mysql"
       - mariadb_slave_temp:/tmp
     environment:
+      # Database initialization (Docker-specific)
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-12345}
       MYSQL_DATABASE: ${DB_NAME:-webstack}
       MYSQL_USER: ${DB_USER:-webstack}
@@ -155,19 +110,8 @@ services:
       MARIADB_AUTO_UPGRADE: 1
       # Timezone configuration
       TZ: ${TIMEZONE:-Asia/Kuala_Lumpur}
-      # Performance optimizations (reduced for slave)
-      MYSQL_INNODB_BUFFER_POOL_SIZE: ${DB_SLAVE_INNODB_BUFFER_POOL_SIZE:-256M}
-      MYSQL_INNODB_LOG_FILE_SIZE: ${DB_INNODB_LOG_FILE_SIZE:-128M}
-      MYSQL_INNODB_FLUSH_LOG_AT_TRX_COMMIT: ${DB_INNODB_FLUSH_LOG_AT_TRX_COMMIT:-2}
-      MYSQL_MAX_CONNECTIONS: ${DB_SLAVE_MAX_CONNECTIONS:-100}
-      MYSQL_QUERY_CACHE_SIZE: ${DB_QUERY_CACHE_SIZE:-128M}
-      MYSQL_QUERY_CACHE_TYPE: ${DB_QUERY_CACHE_TYPE:-1}
-      MYSQL_THREAD_CACHE_SIZE: ${DB_THREAD_CACHE_SIZE:-16}
-      MYSQL_TABLE_OPEN_CACHE: ${DB_TABLE_OPEN_CACHE:-2000}
-      MYSQL_SORT_BUFFER_SIZE: ${DB_SORT_BUFFER_SIZE:-2M}
-      MYSQL_READ_BUFFER_SIZE: ${DB_READ_BUFFER_SIZE:-128K}
-      MYSQL_READ_RND_BUFFER_SIZE: ${DB_READ_RND_BUFFER_SIZE:-256K}
-      MYSQL_KEY_BUFFER_SIZE: ${DB_KEY_BUFFER_SIZE:-128M}
+      # Performance settings are now handled by /etc/mysql/conf.d/my.cnf
+      # This eliminates conflicts and provides single source of truth
     networks:
       - webstack
     depends_on:
@@ -196,28 +140,8 @@ services:
         reservations:
           memory: 256M
           cpus: "0.25"
-    command: >
-      --server-id=2
-      --relay-log=mysql-relay-bin
-      --log-bin=mysql-bin
-      --binlog-format=ROW
-      --read-only=1
-      --skip-slave-start=0
-      --innodb-buffer-pool-size=${DB_SLAVE_INNODB_BUFFER_POOL_SIZE:-256M}
-      --innodb-log-file-size=${DB_INNODB_LOG_FILE_SIZE:-128M}
-      --innodb-flush-log-at-trx-commit=${DB_INNODB_FLUSH_LOG_AT_TRX_COMMIT:-2}
-      --max-connections=${DB_SLAVE_MAX_CONNECTIONS:-100}
-      --query-cache-size=${DB_QUERY_CACHE_SIZE:-128M}
-      --query-cache-type=${DB_QUERY_CACHE_TYPE:-1}
-      --thread-cache-size=${DB_THREAD_CACHE_SIZE:-16}
-      --table-open-cache=${DB_TABLE_OPEN_CACHE:-2000}
-      --sort-buffer-size=${DB_SORT_BUFFER_SIZE:-2M}
-      --read-buffer-size=${DB_READ_BUFFER_SIZE:-128K}
-      --read-rnd-buffer-size=${DB_READ_RND_BUFFER_SIZE:-256K}
-      --key-buffer-size=${DB_KEY_BUFFER_SIZE:-128M}
-      --slow-query-log=1
-      --slow-query-log-file=/var/log/mysql/slow.log
-      --long-query-time=2
+    # Configuration is now handled entirely by /etc/mysql/conf.d/my.cnf
+    # This provides better consistency and easier management
 
   # Web Server Service
   webserver:
@@ -250,20 +174,20 @@ services:
         condition: service_healthy
       php56:
         condition: service_healthy
-      php70:
-        condition: service_healthy
-      php71:
-        condition: service_healthy
-      php72:
-        condition: service_healthy
-      php73:
-        condition: service_healthy
-      php74:
-        condition: service_healthy
-      php80:
-        condition: service_healthy
-      php81:
-        condition: service_healthy
+      # php70:
+      #   condition: service_healthy
+      # php71:
+      #   condition: service_healthy
+      # php72:
+      #   condition: service_healthy
+      # php73:
+      #   condition: service_healthy
+      # php74:
+      #   condition: service_healthy
+      # php80:
+      #   condition: service_healthy
+      # php81:
+      #   condition: service_healthy
       php82:
         condition: service_healthy
       php83:
@@ -275,24 +199,8 @@ services:
     environment:
       # Timezone configuration
       - TZ=${TIMEZONE:-Asia/Kuala_Lumpur}
-      # Performance optimizations
-      - NGINX_WORKER_PROCESSES=auto
-      - NGINX_WORKER_CONNECTIONS=2048
-      - NGINX_WORKER_RLIMIT_NOFILE=4096
-      - NGINX_KEEPALIVE_TIMEOUT=65
-      - NGINX_KEEPALIVE_REQUESTS=1000
-      - NGINX_CLIENT_MAX_BODY_SIZE=100M
-      - NGINX_CLIENT_BODY_BUFFER_SIZE=128k
-      - NGINX_CLIENT_HEADER_BUFFER_SIZE=1k
-      - NGINX_LARGE_CLIENT_HEADER_BUFFERS=4 4k
-      # Gzip optimizations
-      - NGINX_GZIP=on
-      - NGINX_GZIP_COMP_LEVEL=6
-      - NGINX_GZIP_MIN_LENGTH=1000
-      - NGINX_GZIP_VARY=on
-      # Rate limiting
-      - NGINX_LIMIT_REQ_ZONE=$$binary_remote_addr zone=api:10m rate=10r/s
-      - NGINX_LIMIT_CONN_ZONE=$$binary_remote_addr zone=addr:10m
+      # All performance settings are now handled by /etc/nginx/nginx.conf
+      # This eliminates conflicts and provides single source of truth
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/nginx-health"]
       interval: 30s
@@ -332,137 +240,137 @@ services:
       - PHP_VERSION=5.6
 
   # # PHP 7.0 Service
-  php70:
-    <<: *php-common
-    build:
-      context: ./php-stack-7.0-fpm
-      dockerfile: Dockerfile
-    container_name: "webstack-php70"
-    volumes:
-      # PHP configuration files
-      - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/7.0:/usr/local/etc/php/conf.d/99-version:ro"
-      - "./etc/php/7.0/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
-      # Web projects
-      - "./projects:/var/www/projects"
-      # Logs
-      - "./logs/php70:/usr/local/var/log"
-      # Sessions and temp files
-      - php70_sessions:/tmp/sessions
-      - php70_uploads:/tmp/uploads
-    environment:
-      - PHP_VERSION=7.0
+  # php70:
+  #   <<: *php-common
+  #   build:
+  #     context: ./php-stack-7.0-fpm
+  #     dockerfile: Dockerfile
+  #   container_name: "webstack-php70"
+  #   volumes:
+  #     # PHP configuration files
+  #     - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
+  #     - "./etc/php/7.0:/usr/local/etc/php/conf.d/99-version:ro"
+  #     - "./etc/php/7.0/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
+  #     # Web projects
+  #     - "./projects:/var/www/projects"
+  #     # Logs
+  #     - "./logs/php70:/usr/local/var/log"
+  #     # Sessions and temp files
+  #     - php70_sessions:/tmp/sessions
+  #     - php70_uploads:/tmp/uploads
+  #   environment:
+  #     - PHP_VERSION=7.0
 
-  # PHP 7.1 Service
-  php71:
-    <<: *php-common
-    build:
-      context: ./php-stack-7.1-fpm
-      dockerfile: Dockerfile
-    container_name: "webstack-php71"
-    volumes:
-      # PHP configuration files
-      - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/7.1:/usr/local/etc/php/conf.d/99-version:ro"
-      - "./etc/php/7.1/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
-      # Web projects
-      - "./projects:/var/www/projects"
-      # Logs
-      - "./logs/php71:/usr/local/var/log"
-      # Sessions and temp files
-      - php71_sessions:/tmp/sessions
-      - php71_uploads:/tmp/uploads
-    environment:
-      - PHP_VERSION=7.1
+  # # PHP 7.1 Service
+  # php71:
+  #   <<: *php-common
+  #   build:
+  #     context: ./php-stack-7.1-fpm
+  #     dockerfile: Dockerfile
+  #   container_name: "webstack-php71"
+  #   volumes:
+  #     # PHP configuration files
+  #     - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
+  #     - "./etc/php/7.1:/usr/local/etc/php/conf.d/99-version:ro"
+  #     - "./etc/php/7.1/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
+  #     # Web projects
+  #     - "./projects:/var/www/projects"
+  #     # Logs
+  #     - "./logs/php71:/usr/local/var/log"
+  #     # Sessions and temp files
+  #     - php71_sessions:/tmp/sessions
+  #     - php71_uploads:/tmp/uploads
+  #   environment:
+  #     - PHP_VERSION=7.1
 
-  # PHP 7.2 Service
-  php72:
-    <<: *php-common
-    build:
-      context: ./php-stack-7.2-fpm
-      dockerfile: Dockerfile
-    container_name: "webstack-php72"
-    volumes:
-      # PHP configuration files
-      - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/7.2:/usr/local/etc/php/conf.d/99-version:ro"
-      - "./etc/php/7.2/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
-      # Web projects
-      - "./projects:/var/www/projects"
-      # Logs
-      - "./logs/php72:/usr/local/var/log"
+  # # PHP 7.2 Service
+  # php72:
+  #   <<: *php-common
+  #   build:
+  #     context: ./php-stack-7.2-fpm
+  #     dockerfile: Dockerfile
+  #   container_name: "webstack-php72"
+  #   volumes:
+  #     # PHP configuration files
+  #     - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
+  #     - "./etc/php/7.2:/usr/local/etc/php/conf.d/99-version:ro"
+  #     - "./etc/php/7.2/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
+  #     # Web projects
+  #     - "./projects:/var/www/projects"
+  #     # Logs
+  #     - "./logs/php72:/usr/local/var/log"
 
-      # Sessions and temp files
-      - php72_sessions:/tmp/sessions
-      - php72_uploads:/tmp/uploads
-    environment:
-      - PHP_VERSION=7.2
+  #     # Sessions and temp files
+  #     - php72_sessions:/tmp/sessions
+  #     - php72_uploads:/tmp/uploads
+  #   environment:
+  #     - PHP_VERSION=7.2
 
-  # PHP 7.3 Service
-  php73:
-    <<: *php-common
-    build:
-      context: ./php-stack-7.3-fpm
-      dockerfile: Dockerfile
-    container_name: "webstack-php73"
-    volumes:
-      # PHP configuration files
-      - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/7.3:/usr/local/etc/php/conf.d/99-version:ro"
-      - "./etc/php/7.3/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
-      # Web projects
-      - "./projects:/var/www/projects"
-      # Logs
-      - "./logs/php73:/usr/local/var/log"
-      # Sessions and temp files
-      - php73_sessions:/tmp/sessions
-      - php73_uploads:/tmp/uploads
-    environment:
-      - PHP_VERSION=7.3
+  # # PHP 7.3 Service
+  # php73:
+  #   <<: *php-common
+  #   build:
+  #     context: ./php-stack-7.3-fpm
+  #     dockerfile: Dockerfile
+  #   container_name: "webstack-php73"
+  #   volumes:
+  #     # PHP configuration files
+  #     - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
+  #     - "./etc/php/7.3:/usr/local/etc/php/conf.d/99-version:ro"
+  #     - "./etc/php/7.3/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
+  #     # Web projects
+  #     - "./projects:/var/www/projects"
+  #     # Logs
+  #     - "./logs/php73:/usr/local/var/log"
+  #     # Sessions and temp files
+  #     - php73_sessions:/tmp/sessions
+  #     - php73_uploads:/tmp/uploads
+  #   environment:
+  #     - PHP_VERSION=7.3
 
-  # PHP 7.4 Service
-  php74:
-    <<: *php-common
-    build:
-      context: ./php-stack-7.4-fpm
-      dockerfile: Dockerfile
-    container_name: "webstack-php74"
-    volumes:
-      # PHP configuration files
-      - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/7.4:/usr/local/etc/php/conf.d/99-version:ro"
-      - "./etc/php/7.4/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
-      # Web projects
-      - "./projects:/var/www/projects"
-      # Logs
-      - "./logs/php74:/usr/local/var/log"
-      # Sessions and temp files
-      - php74_sessions:/tmp/sessions
-      - php74_uploads:/tmp/uploads
-    environment:
-      - PHP_VERSION=7.4
+  # # PHP 7.4 Service
+  # php74:
+  #   <<: *php-common
+  #   build:
+  #     context: ./php-stack-7.4-fpm
+  #     dockerfile: Dockerfile
+  #   container_name: "webstack-php74"
+  #   volumes:
+  #     # PHP configuration files
+  #     - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
+  #     - "./etc/php/7.4:/usr/local/etc/php/conf.d/99-version:ro"
+  #     - "./etc/php/7.4/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
+  #     # Web projects
+  #     - "./projects:/var/www/projects"
+  #     # Logs
+  #     - "./logs/php74:/usr/local/var/log"
+  #     # Sessions and temp files
+  #     - php74_sessions:/tmp/sessions
+  #     - php74_uploads:/tmp/uploads
+  #   environment:
+  #     - PHP_VERSION=7.4
 
-  # PHP 8.0 Service
-  php80:
-    <<: *php-common
-    build:
-      context: ./php-stack-8.0-fpm
-      dockerfile: Dockerfile
-    container_name: "webstack-php80"
-    volumes:
-      # PHP configuration files
-      - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
-      - "./etc/php/8.0:/usr/local/etc/php/conf.d/99-version:ro"
-      - "./etc/php/8.0/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
-      # Web projects
-      - "./projects:/var/www/projects"
-      # Logs
-      - "./logs/php80:/usr/local/var/log"
-      # Sessions and temp files
-      - php80_sessions:/tmp/sessions
-      - php80_uploads:/tmp/uploads
-    environment:
-      - PHP_VERSION=8.0
+  # # PHP 8.0 Service
+  # php80:
+  #   <<: *php-common
+  #   build:
+  #     context: ./php-stack-8.0-fpm
+  #     dockerfile: Dockerfile
+  #   container_name: "webstack-php80"
+  #   volumes:
+  #     # PHP configuration files
+  #     - "./etc/php/php.ini:/usr/local/etc/php/conf.d/00-general.ini:ro"
+  #     - "./etc/php/8.0:/usr/local/etc/php/conf.d/99-version:ro"
+  #     - "./etc/php/8.0/php-fpm.d:/usr/local/etc/php-fpm.d:ro"
+  #     # Web projects
+  #     - "./projects:/var/www/projects"
+  #     # Logs
+  #     - "./logs/php80:/usr/local/var/log"
+  #     # Sessions and temp files
+  #     - php80_sessions:/tmp/sessions
+  #     - php80_uploads:/tmp/uploads
+  #   environment:
+  #     - PHP_VERSION=8.0
 
   # PHP 8.1 Service
   php81:
