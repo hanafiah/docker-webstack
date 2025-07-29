@@ -4,21 +4,21 @@
 
 services:
   # Development overrides for webserver
-  webserver:
+  nginx:
     environment:
       # Disable rate limiting in development
       - NGINX_LIMIT_REQ_ZONE=off
       - NGINX_LIMIT_CONN_ZONE=off
 
   # Development overrides for database
-  database:
+  mariadb:
     environment:
       # Enable general query log in development
       - MYSQL_GENERAL_LOG=1
       - MYSQL_GENERAL_LOG_FILE=/var/log/mariadb/general.log
 
   # Development overrides for cache
-  cache:
+  redis:
     ports:
       # Expose Redis to all interfaces in development
       - "6379:6379"
@@ -44,8 +44,8 @@ services:
     ports:
       - "8082:8081"
     environment:
-      REDIS_HOSTS: "local:cache:6379"
+      REDIS_HOSTS: "local:redis:6379"
     networks:
       - webstack
     depends_on:
-      - cache
+      - redis

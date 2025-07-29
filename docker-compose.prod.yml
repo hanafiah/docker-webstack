@@ -2,11 +2,11 @@
 # Use this file for production deployments
 # docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
-version: '3.8'
+version: "3.8"
 
 services:
   # Production webserver configuration
-  webserver:
+  nginx:
     restart: unless-stopped
     environment:
       # Strict security settings
@@ -24,7 +24,7 @@ services:
         max-file: "3"
 
   # Production database configuration
-  database:
+  mariadb:
     restart: unless-stopped
     environment:
       # Production database settings
@@ -41,7 +41,7 @@ services:
         max-file: "3"
 
   # Production cache configuration
-  cache:
+  redis:
     restart: unless-stopped
     ports:
       # Redis only accessible from localhost

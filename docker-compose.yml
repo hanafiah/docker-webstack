@@ -115,7 +115,7 @@ services:
     networks:
       - webstack
     depends_on:
-      database:
+      mariadb:
         condition: service_healthy
     healthcheck:
       test:
@@ -170,7 +170,7 @@ services:
       - nginx_proxy_temp:/var/cache/nginx/proxy_temp
       - nginx_fastcgi_temp:/var/cache/nginx/fastcgi_temp
     depends_on:
-      database:
+      mariadb:
         condition: service_healthy
       php56:
         condition: service_healthy
@@ -470,7 +470,7 @@ services:
       - 1025:1025
     networks:
       - webstack
-        
+
   # Redis Service (optional)
   redis:
     image: redis:alpine
@@ -492,8 +492,6 @@ networks:
     name: webstack-network
 
 volumes:
-  database_data:
-  cache_data:
   mariadb_temp:
   mariadb_slave_temp:
   nginx_cache:
